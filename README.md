@@ -1,0 +1,2 @@
+# ScalaTraining
+Simple scala examples
