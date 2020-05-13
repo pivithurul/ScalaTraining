@@ -126,6 +126,31 @@ object PatternMatching extends App {
     }
   }
 
+  //More examples
+  def morePatternMatchingWithSequences(ints: Seq[Int]): String = ints match {
+    case Seq() =>
+      "The Seq is empty !"
+    case Seq(first) =>
+      s"The seq has exactly one element : $first"
+    case Seq(first, second) =>
+      s"The seq has exactly two elements : $first, $second"
+    case s@Seq(_, _, _) =>
+      s"s is a Seq of length three and looks like ${s}" // Note individual elements are not bound to their own names.
+    case s: Seq[Int] if s.length == 4 =>
+      s"s is a Seq of Ints of exactly length 4" // Again, individual elements are not bound to their own names.
+    case _ =>
+      "No match was found!"
+  }
+
+  def f(ints: Seq[Int]): String = ints match {
+    case Seq(first, second, tail @ _*) =>
+      s"The seq has at least two elements : $first, $second. The rest of the Seq is $tail"
+    case Seq(first, tail @ _*) =>
+      s"The seq has at least one element : $first. The rest of the Seq is $tail"
+    case _ =>
+      "The seq didn't match any of the above, so it must be empty"
+  }
+
   //Typed patterns
   def typedPatternMatching(any: Any): String = {
     any match {
@@ -184,6 +209,26 @@ object PatternMatching extends App {
     case c: Computer => c.screenSaverOn
   }
 
+  //Extractors
+  object Doctor {
+    def apply(fullName: String) = fullName
+
+    def unapply(fullName: String): Option[String] = {
+      if (!fullName.isEmpty)
+        Some(fullName.replaceAll("(?<=\\w)(\\w+)", "."))
+      else
+        None
+    }
+  }
+
+  def extractors(doctor: Any): String = {
+    doctor match {
+      case Doctor(initials) => s"My initials are $initials"
+      case _ => "Could not extract initials"
+    }
+  }
+  val doctor = Doctor("John Smith")
+  println(extractors(doctor))
 
   //Sealed classes (all subtypes must be declared in the same file)
   sealed abstract class Furniture
